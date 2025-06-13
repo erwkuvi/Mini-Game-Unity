@@ -75,15 +75,49 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter(Collision other)
+
+
+
+
+
+private void OnCollisionEnter(Collision other)
     {
-        // Only consider collisions with "ground"
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
+        HandleGroundCheck(other);
     }
 
+private void OnCollisionStay(Collision other)
+{
+    HandleGroundCheck(other);
+}
+
+private void HandleGroundCheck(Collision other)
+{
+    var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
+
+    // Allow collision with the ground
+    if (other.gameObject.CompareTag("Ground"))
+    {
+        isGrounded = true;
+        return;
+    }
+
+    // Allow collision with own platform
+    if (other.gameObject.CompareTag(activeCharacter.uniquePlayerPlatform))
+    {
+        isGrounded = true;
+        return;
+    }
+
+    // ✨ NEW: Allow collision with other players (don't ignore)
+    if (other.gameObject.CompareTag("Player"))
+    {
+        isGrounded = true;
+        return;
+    }
+
+    // Ignore other platforms
+    Physics.IgnoreCollision(_rb.GetComponent<Collider>(), other.collider);
+}
 
 
 }

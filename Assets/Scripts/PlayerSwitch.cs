@@ -13,6 +13,7 @@ public class PlayerSwitch : MonoBehaviour
         public float speed;
         public float jumpForce;
         public PlayerController controller;
+        public string uniquePlayerPlatform;
 
         public Character(string name, float speed, float jumpForce, PlayerController controller)
         {
@@ -20,6 +21,7 @@ public class PlayerSwitch : MonoBehaviour
             this.speed = speed;
             this.jumpForce = jumpForce;
             this.controller = controller;
+            this.uniquePlayerPlatform = name + "_platform";
         }
     }
 
