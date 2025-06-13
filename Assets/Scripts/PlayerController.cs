@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,7 +32,7 @@ public class PlayerController : MonoBehaviour
         _move.Disable();
         _jump.Disable();
     }
-    
+
 
     void Update()
     {
@@ -43,6 +45,12 @@ public class PlayerController : MonoBehaviour
         }
         if (_jump.triggered && isGrounded)
             TryJump();
+
+        if (Keyboard.current.backspaceKey.wasPressedThisFrame || Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
     }
 
     private void TryJump()
@@ -65,7 +73,7 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3(moveInput.x, 0, moveInput.y) * speed * Time.deltaTime * activeCharacter.speed;
         _rb.MovePosition(_rb.position + movement);
     }
-    
+
 
     private void OnCollisionEnter(Collision other)
     {
@@ -75,4 +83,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         }
     }
+
+
+
 }
