@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - Claire_platform
+  - Finish_John
+  - Finish_Thomas
+  - Finish_Claire
   layers:
   - Default
   - TransparentFX

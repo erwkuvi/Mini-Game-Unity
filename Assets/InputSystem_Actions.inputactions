@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ResetGame",
+                    "type": "Button",
+                    "id": "99e3ff1c-9e5b-4aa5-a0a4-db05dde79c6f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -338,6 +347,28 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a89c2fbf-49aa-4927-b97b-10f4fd262fc2",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ResetGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dce84829-a3c1-4009-8afa-4195465a68ec",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ResetGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -997,15 +1028,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ResetGame",
-                    "type": "Button",
-                    "id": "63b06b36-777f-41b8-8d3e-e061acdb297a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1050,28 +1072,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "MoveRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f5506166-da17-484e-859a-0962892e376f",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "ResetGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cef01d8a-8228-47da-a0cd-eedf9147ff25",
-                    "path": "<Keyboard>/backspace",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "ResetGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

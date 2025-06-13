@@ -2,9 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-
 public class PlayerController : MonoBehaviour
 {
+    public PlayerSwitch.Character character;
+
     public float speed;
     private Rigidbody _rb;
     public InputActionAsset inputActions;
@@ -23,32 +24,59 @@ public class PlayerController : MonoBehaviour
         var actionMap = inputActions.FindActionMap("Player");
         _move = actionMap.FindAction("Move");
         _jump = actionMap.FindAction("Jump");
-        _reset = inputActions.FindActionMap("PlayerSwitch").actionMap.FindAction("ResetGame");
+        _reset = actionMap.FindAction("ResetGame");
 
+        _reset.Enable();
         _move.Enable();
         _jump.Enable();
     }
 
     void OnDisable()
     {
+        _reset.Disable();
         _move.Disable();
         _jump.Disable();
     }
 
-
     void Update()
     {
-        if (PlayerSwitch.Instance == null) return;
+        if (PlayerSwitch.Instance == null || character.hasFinishStage) return;
 
         var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
         if (activeCharacter != null && activeCharacter.controller == this)
             Move();
+
         if (_jump.triggered && _isGrounded)
             TryJump();
-        if (Keyboard.current.backspaceKey.wasPressedThisFrame || Keyboard.current.rKey.wasPressedThisFrame)
+
+        if (_reset.triggered)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
+        CheckFinishCondition();
     }
+
+    private void CheckFinishCondition()
+    {
+        GameObject finishObj = GameObject.FindWithTag(character.uniquePlayerFinish);
+        if (finishObj == null) return;
+
+        Vector2 playerPos = new Vector2(transform.position.x, transform.position.y);
+        Vector2 finishPos = new Vector2(finishObj.transform.position.x, finishObj.transform.position.y);
+
+        float distance = Vector2.Distance(playerPos, finishPos);
+        float playerWidth = GetComponent<Collider>().bounds.size.x;
+
+        if (distance < playerWidth / 2f)
+        {
+            character.hasFinishStage = true;
+            transform.position = finishObj.transform.position;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.isKinematic = true;
+
+            Debug.Log($"{character.name} has finished!");
+        }
+    }
+
 
     private void TryJump()
     {
@@ -57,70 +85,56 @@ public class PlayerController : MonoBehaviour
         var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
         if (activeCharacter != null && activeCharacter.controller == this)
         {
-            _rb.AddForce(Vector3.up * activeCharacter.jumpForce, ForceMode.Impulse);
+            _rb.AddForce(Vector3.up * character.jumpForce, ForceMode.Impulse);
             _isGrounded = false;
         }
     }
 
     private void Move()
     {
-        var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
         Vector2 moveInput = _move.ReadValue<Vector2>();
-
-        Vector3 movement = new Vector3(moveInput.x, 0, moveInput.y) * speed * Time.deltaTime * activeCharacter.speed;
+        Vector3 movement = new Vector3(moveInput.x, 0, moveInput.y) * speed * Time.deltaTime * character.speed;
         _rb.MovePosition(_rb.position + movement);
     }
 
-
-
-
-
-
-
-private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other)
     {
-<<<<<<< Updated upstream
         HandleGroundCheck(other);
-=======
-        // Only consider collisions with "ground"
-        if (other.gameObject.CompareTag("Ground"))
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        HandleGroundCheck(other);
+    }
+
+    private void HandleGroundCheck(Collision other)
+    {
+        string tag = other.gameObject.tag;
+
+        if (tag == "Ground" || tag == "Player")
+        {
             _isGrounded = true;
->>>>>>> Stashed changes
+            return;
+        }
+
+        // ✅ Stand on own platform
+        if (tag == character.uniquePlayerPlatform)
+        {
+            _isGrounded = true;
+            return;
+        }
+        
+        if (tag == character.uniquePlayerFinish && other.gameObject.transform.position == character.controller.gameObject.transform.position)
+            Debug.Log("test");
+            
+
+        // ❌ Fall through other platforms
+        Collider ownCollider = _rb.GetComponent<Collider>();
+        Collider otherCollider = other.collider;
+
+        if (ownCollider != null && otherCollider != null)
+        {
+            Physics.IgnoreCollision(ownCollider, otherCollider);
+        }
     }
-
-private void OnCollisionStay(Collision other)
-{
-    HandleGroundCheck(other);
-}
-
-private void HandleGroundCheck(Collision other)
-{
-    var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
-
-    // Allow collision with the ground
-    if (other.gameObject.CompareTag("Ground"))
-    {
-        isGrounded = true;
-        return;
-    }
-
-    // Allow collision with own platform
-    if (other.gameObject.CompareTag(activeCharacter.uniquePlayerPlatform))
-    {
-        isGrounded = true;
-        return;
-    }
-
-    // ✨ NEW: Allow collision with other players (don't ignore)
-    if (other.gameObject.CompareTag("Player"))
-    {
-        isGrounded = true;
-        return;
-    }
-
-    // Ignore other platforms
-    Physics.IgnoreCollision(_rb.GetComponent<Collider>(), other.collider);
-}
-
-
 }
