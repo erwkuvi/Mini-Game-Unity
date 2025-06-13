@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public InputActionAsset inputActions;
     private InputAction _move;
     private InputAction _jump;
+    private InputAction _reset;
     private bool _isGrounded = true;
 
     void Awake()
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
         var actionMap = inputActions.FindActionMap("Player");
         _move = actionMap.FindAction("Move");
         _jump = actionMap.FindAction("Jump");
+        _reset = inputActions.FindActionMap("PlayerSwitch").actionMap.FindAction("ResetGame");
 
         _move.Enable();
         _jump.Enable();
