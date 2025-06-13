@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public InputActionAsset inputActions;
     private InputAction _move;
     private InputAction _jump;
-    private bool isGrounded = true;
+    private bool _isGrounded = true;
 
     void Awake()
     {
@@ -40,28 +40,23 @@ public class PlayerController : MonoBehaviour
 
         var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
         if (activeCharacter != null && activeCharacter.controller == this)
-        {
             Move();
-        }
-        if (_jump.triggered && isGrounded)
+        if (_jump.triggered && _isGrounded)
             TryJump();
-
         if (Keyboard.current.backspaceKey.wasPressedThisFrame || Keyboard.current.rKey.wasPressedThisFrame)
-        {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
 
     }
 
     private void TryJump()
     {
-        if (!isGrounded) return;
+        if (!_isGrounded) return;
 
         var activeCharacter = PlayerSwitch.Instance.GetActiveCharacter();
         if (activeCharacter != null && activeCharacter.controller == this)
         {
             _rb.AddForce(Vector3.up * activeCharacter.jumpForce, ForceMode.Impulse);
-            isGrounded = false;
+            _isGrounded = false;
         }
     }
 
@@ -82,7 +77,13 @@ public class PlayerController : MonoBehaviour
 
 private void OnCollisionEnter(Collision other)
     {
+<<<<<<< Updated upstream
         HandleGroundCheck(other);
+=======
+        // Only consider collisions with "ground"
+        if (other.gameObject.CompareTag("Ground"))
+            _isGrounded = true;
+>>>>>>> Stashed changes
     }
 
 private void OnCollisionStay(Collision other)
