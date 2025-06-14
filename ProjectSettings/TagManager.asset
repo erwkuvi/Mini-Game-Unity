@@ -9,6 +9,8 @@ TagManager:
   - Finish_John
   - Finish_Thomas
   - Finish_Claire
+  - Thomas_platform
+  - John_platform
   layers:
   - Default
   - TransparentFX

@@ -57,8 +57,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionExit(Collision other)
     {
-        if (other.gameObject.CompareTag("Ground") || 
-            other.gameObject.CompareTag("Player") || 
+        if (other.gameObject.CompareTag("Ground") ||
+            other.gameObject.CompareTag("Player") ||
             other.gameObject.CompareTag(character.uniquePlayerPlatform))
         {
             _isGrounded = false;
@@ -116,34 +116,54 @@ public class PlayerController : MonoBehaviour
     {
         HandleGroundCheck(other);
     }
-    
-    
 
-    private void HandleGroundCheck(Collision other)
+
+private void HandleGroundCheck(Collision other)
+{
+    // Check if this is a finish object
+    if (other.gameObject.tag.StartsWith("Finish_"))
     {
-        string tag = other.gameObject.tag;
+        // Always ignore collisions with finish zones
+        Collider ownCollider = _rb.GetComponent<Collider>();
+        Collider otherCollider = other.collider;
 
-        foreach (ContactPoint contact in other.contacts)
+        if (ownCollider != null && otherCollider != null)
+            Physics.IgnoreCollision(ownCollider, otherCollider);
+        
+        return;
+    }
+
+    // Get the angle between contact normal and Vector3.up
+    foreach (ContactPoint contact in other.contacts)
+    {
+        float angle = Vector3.Angle(contact.normal, Vector3.up);
+
+        // If it's a fairly horizontal surface (standable)
+        if (angle < 45f)
         {
-            if (Vector3.Angle(contact.normal, Vector3.up) < 45f) // nearly flat surface
+            if (other.gameObject.CompareTag("Ground") ||
+                other.gameObject.CompareTag("Player") ||
+                other.gameObject.CompareTag(character.uniquePlayerPlatform))
             {
-                if (other.gameObject.CompareTag("Ground") ||
-                    other.gameObject.CompareTag("Player") ||
-                    other.gameObject.CompareTag(character.uniquePlayerPlatform))
-                {
-                    _isGrounded = true;
-                    return;
-                }
+                _isGrounded = true;
+                return;
             }
         }
-        
-      //  if (tag == character.uniquePlayerFinish && other.gameObject.transform.position == character.controller.gameObject.transform.position)
-      //      Debug.Log("test");
-            
+    }
+
+    // Ignore other players’ platforms if not standable
+    if (!other.gameObject.CompareTag("Ground") &&
+        !other.gameObject.CompareTag("Player") &&
+        !other.gameObject.CompareTag(character.uniquePlayerPlatform) &&
+        other.gameObject.tag.EndsWith("_platform")) // player-specific platform
+    {
         Collider ownCollider = _rb.GetComponent<Collider>();
         Collider otherCollider = other.collider;
 
         if (ownCollider != null && otherCollider != null)
             Physics.IgnoreCollision(ownCollider, otherCollider);
     }
+}
+
+
 }
