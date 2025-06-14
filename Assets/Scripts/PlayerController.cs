@@ -55,6 +55,16 @@ public class PlayerController : MonoBehaviour
         CheckFinishCondition();
     }
 
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground") || 
+            other.gameObject.CompareTag("Player") || 
+            other.gameObject.CompareTag(character.uniquePlayerPlatform))
+        {
+            _isGrounded = false;
+        }
+    }
+
     private void CheckFinishCondition()
     {
         GameObject finishObj = GameObject.FindWithTag(character.uniquePlayerFinish);
@@ -72,8 +82,8 @@ public class PlayerController : MonoBehaviour
             transform.position = finishObj.transform.position;
             _rb.linearVelocity = Vector3.zero;
             _rb.isKinematic = true;
-
             Debug.Log($"{character.name} has finished!");
+
         }
     }
 
@@ -106,35 +116,34 @@ public class PlayerController : MonoBehaviour
     {
         HandleGroundCheck(other);
     }
+    
+    
 
     private void HandleGroundCheck(Collision other)
     {
         string tag = other.gameObject.tag;
 
-        if (tag == "Ground" || tag == "Player")
+        foreach (ContactPoint contact in other.contacts)
         {
-            _isGrounded = true;
-            return;
-        }
-
-        // ✅ Stand on own platform
-        if (tag == character.uniquePlayerPlatform)
-        {
-            _isGrounded = true;
-            return;
+            if (Vector3.Angle(contact.normal, Vector3.up) < 45f) // nearly flat surface
+            {
+                if (other.gameObject.CompareTag("Ground") ||
+                    other.gameObject.CompareTag("Player") ||
+                    other.gameObject.CompareTag(character.uniquePlayerPlatform))
+                {
+                    _isGrounded = true;
+                    return;
+                }
+            }
         }
         
-        if (tag == character.uniquePlayerFinish && other.gameObject.transform.position == character.controller.gameObject.transform.position)
-            Debug.Log("test");
+      //  if (tag == character.uniquePlayerFinish && other.gameObject.transform.position == character.controller.gameObject.transform.position)
+      //      Debug.Log("test");
             
-
-        // ❌ Fall through other platforms
         Collider ownCollider = _rb.GetComponent<Collider>();
         Collider otherCollider = other.collider;
 
         if (ownCollider != null && otherCollider != null)
-        {
             Physics.IgnoreCollision(ownCollider, otherCollider);
-        }
     }
 }

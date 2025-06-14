@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerSwitch : MonoBehaviour
 {
@@ -116,11 +117,9 @@ public class PlayerSwitch : MonoBehaviour
             activeCharacter = thomas;
         if (switchToJohnAction.triggered)
             activeCharacter = john;
-
-//        if (moveRightAction.ReadValue<float>() > 0 && activeCharacter != null)
-//        {
-//            activeCharacter.controller.transform.position += Vector3.left * (activeCharacter.speed * Time.deltaTime);
-//        }
+        
+        if (claire.hasFinishStage && john.hasFinishStage && thomas.hasFinishStage)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
 }

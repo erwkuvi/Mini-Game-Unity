@@ -13,7 +13,10 @@ public class CameraController : MonoBehaviour
             Debug.LogError("PlayerSwitch or activeCharacter not assigned!");
             return;
         }
-        _offset = transform.position - playerSwitch.activeCharacter.controller.transform.position;
+
+        transform.position = playerSwitch.activeCharacter.controller.transform.position;
+
+        _offset = new Vector3(0, 0, -12);
     }
 
     void LateUpdate()
