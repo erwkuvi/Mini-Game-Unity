@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
 
         transform.position = playerSwitch.activeCharacter.controller.transform.position;
 
-        _offset = new Vector3(0, 0, -12);
+        _offset = new Vector3(0, 0, -5);
     }
 
     void LateUpdate()

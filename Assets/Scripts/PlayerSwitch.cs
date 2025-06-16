@@ -117,9 +117,15 @@ public class PlayerSwitch : MonoBehaviour
             activeCharacter = thomas;
         if (switchToJohnAction.triggered)
             activeCharacter = john;
-        
+
         if (claire.hasFinishStage && john.hasFinishStage && thomas.hasFinishStage)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        {
+            int next_scene = SceneManager.GetActiveScene().buildIndex + 1;
+            if (next_scene >= SceneManager.sceneCountInBuildSettings)
+                SceneManager.LoadScene(next_scene);
+            else
+                SceneManager.LoadScene(0);
+        }
     }
 
 }

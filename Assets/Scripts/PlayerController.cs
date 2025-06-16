@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public PlayerSwitch.Character character;
+    
+    private Transform _currentPlatform;
+    private Vector3 _lastPlatformPosition;
 
     public float speed;
     private Rigidbody _rb;
@@ -52,8 +55,24 @@ public class PlayerController : MonoBehaviour
         if (_reset.triggered)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
+
         CheckFinishCondition();
     }
+    
+    void FixedUpdate()
+    {
+        if (_currentPlatform != null)
+        {
+            Vector3 platformMovement = _currentPlatform.position - _lastPlatformPosition;
+            if (platformMovement != Vector3.zero)
+            {
+                _rb.MovePosition(_rb.position + platformMovement);
+            }
+
+            _lastPlatformPosition = _currentPlatform.position;
+        }
+    }
+
 
     private void OnCollisionExit(Collision other)
     {
@@ -62,7 +81,16 @@ public class PlayerController : MonoBehaviour
             other.gameObject.CompareTag(character.uniquePlayerPlatform))
         {
             _isGrounded = false;
+            if (transform.parent == other.transform)
+                transform.SetParent(null);
+
+            if (_currentPlatform == other.transform)
+                _currentPlatform = null;
+
+            //if (transform.parent == other.transform)
+              //  transform.SetParent(null);
         }
+        
     }
 
     private void CheckFinishCondition()
@@ -146,6 +174,10 @@ private void HandleGroundCheck(Collision other)
                 other.gameObject.CompareTag(character.uniquePlayerPlatform))
             {
                 _isGrounded = true;
+                // Only track platform movement if it's another player or a moving object
+                _currentPlatform = other.transform;
+                _lastPlatformPosition = _currentPlatform.position;
+//                transform.SetParent(other.transform);  // Parent to the player you're standing on
                 return;
             }
         }
