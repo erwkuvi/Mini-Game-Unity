@@ -11,6 +11,12 @@ TagManager:
   - Finish_Claire
   - Thomas_platform
   - John_platform
+  - Teleporter_Orange
+  - Teleporter_NeonGreen
+  - Teleporter_Magenta
+  - Teleporter_Gold
+  - Teleporter_ForestGreen
+  - Teleporter_Cyan
   layers:
   - Default
   - TransparentFX
