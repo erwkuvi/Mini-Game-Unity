@@ -4,15 +4,22 @@ public class SwitchController : MonoBehaviour
 {
     private Renderer rend;
     public GameObject door1;
+    public GameObject movingPlatform;
+    private MovingPlatform movingPlatformScript;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public Material m_Blue;
     public Material m_Red;
     public Material m_Yellow;
+    public float movingSpeed;
+    public string movingAxis;
+    public float movingDistance;
+    
 
     void Start()
     {
         //Fetch the Material from the Renderer of the GameObject
         rend = GetComponent<Renderer>();
+        movingPlatformScript = movingPlatform.GetComponent<MovingPlatform>();
         Debug.Log("Materials " + rend.material.name);
     }
 
@@ -35,9 +42,16 @@ public class SwitchController : MonoBehaviour
         else if (other_material.name.Contains("Thomas") && other.tag == "Player")
         {
             rend.material = m_Red;
-            door1.layer = LayerMask.NameToLayer("Red");
-            door1.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/Thomas_Platforms_Colour");
-            
+            if (door1.activeSelf)
+            {
+                door1.layer = LayerMask.NameToLayer("Red");
+                door1.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/Thomas_Platforms_Colour");
+            }
+
+            if (!movingPlatformScript) return;
+            movingPlatformScript.speed = movingSpeed;
+            movingPlatformScript.axis = movingAxis;
+            movingPlatformScript.distance = movingDistance;
         }
             
             //Assign other_material to this
