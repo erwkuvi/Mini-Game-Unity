@@ -79,7 +79,7 @@ public class PlayerSwitch : MonoBehaviour
             Destroy(gameObject);
 
         // Initialize characters
-        claire = new Character("Claire", 0.2f, 15.0f, claireController);
+        claire = new Character("Claire", 0.5f, 30.0f, claireController);
         thomas = new Character("Thomas", 1.0f, 12.0f, thomasController);
         john = new Character("John", 5.0f, 30.0f, johnController);
         activeCharacter = claire;
@@ -121,10 +121,16 @@ public class PlayerSwitch : MonoBehaviour
         if (claire.hasFinishStage && john.hasFinishStage && thomas.hasFinishStage)
         {
             int next_scene = SceneManager.GetActiveScene().buildIndex + 1;
-            if (next_scene >= SceneManager.sceneCountInBuildSettings)
+            if (next_scene < SceneManager.sceneCountInBuildSettings)
+            {
                 SceneManager.LoadScene(next_scene);
+                Debug.Log("Scene loaded");
+            }
             else
+            {
                 SceneManager.LoadScene(0);
+                Debug.Log("First Scene loaded");
+            }
         }
     }
 
