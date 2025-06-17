@@ -59,20 +59,25 @@ public class PlayerController : MonoBehaviour
         CheckFinishCondition();
     }
     
-    void FixedUpdate()
+void FixedUpdate()
+{
+    if (_currentPlatform != null)
     {
-        if (_currentPlatform != null)
-        {
-            Vector3 platformMovement = _currentPlatform.position - _lastPlatformPosition;
-            if (platformMovement != Vector3.zero)
-            {
-                _rb.MovePosition(_rb.position + platformMovement);
-            }
+        Vector3 platformMovement = _currentPlatform.position - _lastPlatformPosition;
+        _lastPlatformPosition = _currentPlatform.position;
 
-            _lastPlatformPosition = _currentPlatform.position;
+        // Apply direct movement
+        if (platformMovement != Vector3.zero)
+            _rb.MovePosition(_rb.position + platformMovement);
+
+        // Apply velocity from platform, only if it has a MovingPlatform script
+        MovingPlatform mp = _currentPlatform.GetComponent<MovingPlatform>();
+        if (mp != null)
+        {
+            _rb.linearVelocity = mp.GetVelocity();  // 🧠 Use velocity here
         }
     }
-
+}
 
     private void OnCollisionExit(Collision other)
     {
