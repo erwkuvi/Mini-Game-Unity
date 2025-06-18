@@ -5,6 +5,7 @@ public class CameraController : MonoBehaviour
     public PlayerSwitch playerSwitch;
 
     private Vector3 _offset;
+    private float _lowBound = -4.0f;
 
     void Start()
     {
@@ -23,7 +24,13 @@ public class CameraController : MonoBehaviour
     {
         if (playerSwitch.activeCharacter != null)
         {
-            transform.position = playerSwitch.activeCharacter.controller.transform.position + _offset;
+            if (playerSwitch.activeCharacter.controller.transform.position.y > _lowBound)
+                transform.position = playerSwitch.activeCharacter.controller.transform.position + _offset;
+            else
+            {
+                Debug.Log("Gone");
+            }
         }
+        
     }
 }
