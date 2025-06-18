@@ -23,14 +23,6 @@ public class CameraController : MonoBehaviour
     void LateUpdate()
     {
         if (playerSwitch.activeCharacter != null)
-        {
-            if (playerSwitch.activeCharacter.controller.transform.position.y > _lowBound)
-                transform.position = playerSwitch.activeCharacter.controller.transform.position + _offset;
-            else
-            {
-                Debug.Log("Gone");
-            }
-        }
-        
+            transform.position = playerSwitch.activeCharacter.controller.transform.position + _offset;
     }
 }
