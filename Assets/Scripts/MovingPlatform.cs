@@ -65,6 +65,7 @@ public class MovingPlatform : MonoBehaviour
     public float speed;
     public string axis;
     public float distance;
+    public bool backAndForth;
 
     private Vector3 startPosition;
     private Rigidbody _rb;
